@@ -56,7 +56,7 @@ function addPolicy(string memory _id, address payable _ensured, string memory _i
   function compareStrings(string memory a, string memory b) public pure returns (bool) {
       return (keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b)));
   }
-
+  //Function to change the state of a policy to Retired
   function RetirePolicy(string memory _id) public {
     for (uint i=0; i < polizas.length; i++){
       if (compareStrings(polizas[i].id,_id) )
