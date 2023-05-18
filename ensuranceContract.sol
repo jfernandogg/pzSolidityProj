@@ -3,7 +3,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 contract insurancePolicies {
-  
+
 
 
     struct Tpoliza {
@@ -52,25 +52,54 @@ function addPolicy(string memory _id, address payable _ensured, string memory _i
         polizas.push(newPolicy);
   }
 
+  //Helper function to compare strings converting them to bytes before converting them to hashes
+  function compareStrings(string memory a, string memory b) public pure returns (bool) {
+      return (keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b)));
+  }
 
   function RetirePolicy(string memory _id) public {
-
+    for (uint i=0; i < polizas.length; i++){
+      if (compareStrings(polizas[i].id,_id) )
+        polizas[i].state = TEstates.Retired;
+    }
   }
 
   function claimPolicy(string memory _id) public {
-  
+    for( uint i=0; i<polizas.length; i++){
+      if( compareStrings(polizas[i].id,_id) ) {
+        polizas[i].state = TEstates.Loss;
+      }
+    }
   }
 
-  function totalAmountActivePolicy() public {
-
+  function totalAmountActivePolicy() public view returns (uint) {
+    uint amount = 0;
+    for( uint i=0; i<polizas.length; i++ ) {
+      if( polizas[i].state == TEstates.Active ){
+        amount += polizas[i].rates;
+      }
+    }
+    return amount;
   }
 
-  function totalAmountRetiredPolicy() public {
-
+  function totalAmountRetiredPolicy() public view returns (uint) {
+    uint amount = 0;
+    for( uint i=0; i<polizas.length; i++ ) {
+      if( polizas[i].state == TEstates.Retired ){
+        amount += polizas[i].rates;
+      }
+    }
+    return amount;
   }
 
-  function totalAmountClaimed() public {
-
+  function totalAmountClaimed() public view returns (uint) {
+    uint amount = 0;
+    for( uint i=0; i<polizas.length; i++ ) {
+      if( polizas[i].state == TEstates.Loss ){
+        amount += polizas[i].rates;
+      }
+    }
+    return amount;
   }
 
 
